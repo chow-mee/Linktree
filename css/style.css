@@ -387,7 +387,7 @@ ul li {
 	src:url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.eot?#iefix') format('embedded-opentype'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.woff2') format('woff2'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.woff') format('woff'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.ttf') format('truetype'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.svg#OpenSans') format('svg');
 }
 
-/* --- 流星特效代码开始 --- */
+/* --- 升级版：拖尾+随机大小流星群开始 --- */
 body::before {
     content: "";
     position: fixed;
@@ -395,23 +395,59 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    /* 这里画流星的“点” */
+    /* 使用 5 个线性渐变来创建 5 颗带有发光尾巴的流星 */
     background-image: 
-        radial-gradient(1px 1px at 10% 10%, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2px 2px at 30% 30%, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(1px 1px at 50% 50%, #fff, rgba(255, 255, 255, 0)),
-        radial-gradient(2px 2px at 70% 70%, #fff, rgba(255, 255, 255, 0));
-    background-size: 100% 100%;
-    animation: meteors 10s linear infinite; 
+        /* 第1颗（最长，最亮） */
+        linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%),
+        /* 第2颗（较小，偏淡） */
+        linear-gradient(45deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 80%),
+        /* 第3颗（中等，亮） */
+        linear-gradient(45deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 60%),
+        /* 第4颗（小，快速） */
+        linear-gradient(45deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 75%),
+        /* 第5颗（中等，慢速） */
+        linear-gradient(45deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 90%);
+    background-repeat: no-repeat;
+    
+    /* 核心：定义 5 颗流星的随机大小（长 x 宽） */
+    background-size: 
+        150px 2px,  /* 第1颗：长150像素，粗2像素 */
+        80px 1px,   /* 第2颗：长80像素，粗1像素 */
+        110px 1px,  /* 第3颗：长110像素，粗1像素 */
+        60px 2px,   /* 第4颗：长60像素，粗2像素 */
+        130px 1px;  /* 第5颗：长130像素，粗1像素 */
+    
+    /* 核心：定义 5 颗流星在屏幕上的随机起始位置 */
+    background-position: 
+        15% 15%,   /* 第1颗起始位置 */
+        45% 30%,   /* 第2颗 */
+        75% 10%,   /* 第3颗 */
+        35% 60%,   /* 第4颗 */
+        65% 50%;   /* 第5颗 */
+    
+    animation: meteors 10s linear infinite; /* 如果想让流星更频繁，可以把 10s 改小 */
     pointer-events: none;
-    z-index: 1; /* 关键：设置成 1 确保它浮在背景图上面 */
-    opacity: 0.7;
+    z-index: 1; /* 确保浮在背景图上面 */
+    opacity: 0.6; /* 调整整体亮度，配合深色背景 */
 }
 
+/* 核心：定义流星划过的动画轨迹 */
 @keyframes meteors {
-    0% { transform: translate(100%, -100%) rotate(-45deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translate(-100%, 100%) rotate(-45deg); opacity: 0; }
+    0% {
+        /* 从屏幕右上角外部开始 */
+        transform: translate(100%, -100%) rotate(-45deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1; /* 划入时变亮 */
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        /* 划出屏幕左下角外部 */
+        transform: translate(-100%, 100%) rotate(-45deg);
+        opacity: 0; /* 划出时消失 */
+    }
 }
-/* --- 流星特效代码结束 --- */
+/* --- 升级版：拖尾+随机大小流星群结束 --- */
