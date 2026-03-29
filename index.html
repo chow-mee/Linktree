@@ -43,6 +43,8 @@
 
 <body>
 
+<canvas id="meteors-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></canvas>
+  
     <div class="container">
         <div class="column">
 
@@ -107,6 +109,83 @@
     </div>
   </div>
 
+  <script>
+(function() {
+    const canvas = document.getElementById('meteors-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Meteor {
+        constructor() { this.init(); }
+
+        init() {
+            // 随机起始位置（右上区域）
+            this.x = Math.random() * w * 1.5;
+            this.y = Math.random() * -h * 0.5;
+            // 随机属性：速度、长度、粗细
+            this.speed = Math.random() * 10 + 6; 
+            this.len = Math.random() * 120 + 80; 
+            this.thickness = Math.random() * 2 + 1; 
+            this.alpha = 1;
+            this.vx = -this.speed; // 向左飞
+            this.vy = this.speed;  // 向下飞
+        }
+
+        draw() {
+            // 灵动核心：使用线性渐变做出燃烧的拖尾感
+            let gradient = ctx.createLinearGradient(this.x, this.y, this.x - this.vx * 2, this.y - this.vy * 2);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`);
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.save();
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = this.thickness;
+            ctx.lineCap = 'round'; // 圆润头部
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + (this.vx * this.len / 100), this.y + (this.vy * this.len / 100));
+            ctx.stroke();
+
+            // 粒子碎裂感：在流星头部随机洒下微小粒子
+            if (Math.random() > 0.5) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha * 0.5})`;
+                ctx.fillRect(this.x + Math.random() * 10, this.y + Math.random() * 10, 1.5, 1.5);
+            }
+            ctx.restore();
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 0.003; // 划过时能量耗尽变淡
+
+            if (this.alpha <= 0 || this.y > h || this.x < 0) {
+                this.init();
+            }
+        }
+    }
+
+    const meteors = Array.from({ length: 6 }, () => new Meteor());
+
+    function animate() {
+        ctx.clearRect(0, 0, w, h);
+        meteors.forEach(m => {
+            m.update();
+            m.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+</script>
+  
 </body>
 
 </html>
