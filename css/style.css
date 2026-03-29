@@ -141,6 +141,7 @@ body {
   background-position: center;  /* 居中 */
   background-repeat: no-repeat;
   background-attachment: fixed;
+	color: #ffffff; /* <--- 加入这一行，所有文字都会变白 */
 }
 .container p {
 	margin:0 0 var(--spacing-xl) 0;
