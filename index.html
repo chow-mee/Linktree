@@ -168,7 +168,7 @@
             this.x -= this.speed * Math.cos(Math.PI / 6);
             this.y += this.speed * Math.sin(Math.PI / 6);
           
-            this.alpha -= 0.0015; // 慢慢变淡
+            this.alpha -= 0.0008; // 慢慢变淡
 
             if (this.alpha <= 0 || this.y > h || this.x < -this.len) {
                 this.init();
