@@ -107,6 +107,102 @@
     </div>
   </div>
 
+  <script>
+    const canvas = document.getElementById('meteors-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // 1. 让画布始终铺满全屏
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // 2. 定义流星类，核心在于粒子散射和灵动轨迹
+    class Meteor {
+        constructor() {
+            this.init();
+        }
+
+        init() {
+            // 随机起始位置 (通常从右上飞向左下)
+            this.x = Math.random() * canvas.width * 1.5;
+            this.y = Math.random() * -canvas.height * 0.5;
+            // 随机大小和速度，让它们看起来更自然
+            this.len = Math.random() * 150 + 50; // 流星长度
+            this.speed = Math.random() * 8 + 4; // 飞行速度
+            this.angle = Math.PI * -0.25; // 飞行角度，默认-45度
+            // 核心：拖尾的灵动感
+            this.tailLen = Math.random() * 200 + 100; // 尾巴长度
+            this.tailSpread = Math.random() * 2 + 1; // 尾巴散射程度
+            this.alpha = 1; // 初始亮度
+        }
+
+        update() {
+            // 移动流星
+            this.x -= this.speed * Math.cos(this.angle);
+            this.y += this.speed * Math.sin(this.angle);
+            
+            // 灵动：流星划过时，亮度逐渐降低，模拟燃烧耗尽
+            this.alpha -= 0.005;
+
+            // 粒子：在拖尾处实时生成随机粒子
+            if (this.alpha > 0) {
+                for (let i = 0; i < this.tailSpread; i++) {
+                    const tailX = this.x + (Math.random() - 0.5) * i * 3;
+                    const tailY = this.y + (Math.random() - 0.5) * i * 3;
+                    const tailAlpha = this.alpha * (Math.random() * 0.5 + 0.1);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${tailAlpha})`;
+                    ctx.fillRect(tailX, tailY, Math.random() * 2 + 1, Math.random() * 2 + 1);
+                }
+            }
+
+            // 如果飞出屏幕或燃烧殆尽，则重置一颗
+            if (this.x < -canvas.width || this.y > canvas.height || this.alpha < 0) {
+                this.init();
+            }
+        }
+
+        draw() {
+            // 绘制流星主体和发光的头部
+            ctx.save();
+            ctx.beginPath();
+            ctx.lineWidth = Math.random() * 1.5 + 0.5; // 流星粗细随机
+            ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
+            ctx.moveTo(this.x, this.y);
+            // 绘制带有角度的拉伸尾巴
+            const tailEndX = this.x + this.len * Math.cos(this.angle);
+            const tailEndY = this.y - this.len * Math.sin(this.angle);
+            ctx.lineTo(tailEndX, tailEndY);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    // 3. 创建流星群 (例如 5 颗)
+    const meteors = [];
+    for (let i = 0; i < 5; i++) {
+        meteors.push(new Meteor());
+    }
+
+    // 4. 动画循环
+    function animate() {
+        // 清空画布 (每帧清空，创造移动感)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // 更新并绘制每颗流星
+        meteors.forEach(meteor => {
+            meteor.update();
+            meteor.draw();
+        });
+        
+        // 无限循环
+        requestAnimationFrame(animate);
+    }
+    animate();
+</script>
+
 </body>
 
 </html>
