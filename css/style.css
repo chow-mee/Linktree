@@ -386,3 +386,16 @@ ul li {
 	src:url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.eot');
 	src:url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.eot?#iefix') format('embedded-opentype'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.woff2') format('woff2'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.woff') format('woff'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.ttf') format('truetype'),url('../fonts/open-sans-v34-vietnamese_latin-ext_latin_hebrew_greek-ext_greek_cyrillic-ext_cyrillic-800.svg#OpenSans') format('svg');
 }
+
+/* --- 灵动流星画布基础样式 --- */
+#meteors-canvas {
+    position: fixed;        /* 固定在屏幕上，不随滚动条移动 */
+    top: 0;
+    left: 0;
+    width: 100vw;           /* 铺满视口宽度 */
+    height: 100vh;          /* 铺满视口高度 */
+    z-index: 1;             /* 确保它在背景图 (z-index: -1) 之上 */
+    pointer-events: none;   /* 核心：让点击动作穿透画布，这样你才能点到按钮 */
+    background: transparent; /* 必须透明，否则会遮住背景图 */
+}
+/* --- 样式结束 --- */
