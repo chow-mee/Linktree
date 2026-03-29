@@ -407,7 +407,7 @@ body::before {
     background-size: 100% 100%;
     animation: meteors 15s linear infinite; /* 绑定动画 */
     pointer-events: none; /* 确保流星不会阻挡鼠标点击链接 */
-    z-index: -1; /* 放在内容后面，背景图前面 */
+    z-index: 1; /* 放在内容前面，背景图后面 */
     opacity: 0.7; /* 控制流星的亮度 */
 }
 
